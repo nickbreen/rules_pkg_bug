@@ -8,7 +8,7 @@ def _tree_artifact_rule(ctx):
         echo "BAR" > $1/bar/bar.txt
         echo "BAZ" > $1/baz/baz.txt
         echo "Apparently umask [$(umask -S)] is honoured here:"
-        find $1 -printf "%M /$(basename $1)/%P\n" | tee $2
+        find $1 -type d -printf "%M %p/\n" -o -printf "%M %p\n" | sed "s!$(dirname $1)!!" | tee $2
         """,
         arguments = [dir.path, perms.path],
         outputs = [dir, perms]
