@@ -2,6 +2,8 @@ load("@rules_pkg//pkg:mappings.bzl", "pkg_files")
 load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 load("//:rule.bzl", "tree_artifact_rule")
 
+package(default_visibility = ["//visibility:public"])
+
 tree_artifact_rule(name = "tree", dir = "foo.d")
 
 pkg_files(name = "files", srcs = [":tree"])
@@ -43,4 +45,11 @@ sh_test(
     srcs = ["//:test.sh"],
     args = ["$(location :expected-perms)", "$(location :perms/files)"],
     data = [":expected-perms", ":perms/files"]
+)
+
+sh_test(
+    name = "files-and-tar-are-consistent",
+    srcs = ["//:test.sh"],
+    args = ["$(location :perms/tar)", "$(location :perms/files)"],
+    data = [":perms/tar", ":perms/files"]
 )
